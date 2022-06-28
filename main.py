@@ -1,4 +1,4 @@
-from lib2to3.pytree import convert
+from itertools import count
 from turtle import update
 from pygame import display
 from pygame.image import load
@@ -11,15 +11,14 @@ from pygame.locals import QUIT
 from sys import exit
 from random import randint
 from pygame.sprite import Group, GroupSingle
-import os
 
-diretorio_principal = os.path.dirname(__file__)
-diretorio_imagens = os.path.join(diretorio_principal,'img')
-diretorio_soms = os.path.join(diretorio_principal,'sounds')
+
+
 pygame.init()
 
 VolumeS_do_game = 10
 VolumeM_do_game = 5
+
 # Soms
 musica_de_fundo = pygame.mixer.music.load('sounds/musicadefundo.mp3')
 pygame.mixer.music.set_volume(VolumeM_do_game)
@@ -28,98 +27,49 @@ colisao_br = pygame.mixer.Sound('sounds/break_block.wav')
 colisao_br.set_volume(VolumeS_do_game)
 colisao_wi = pygame.mixer.Sound('sounds/coin.wav')
 colisao_wi.set_volume(VolumeS_do_game)
+
 #Tela
 altura = 600
 largura = 600
 tamanho = largura , altura
 superficie= display.set_mode(size=(tamanho))
-sprite_sheet = pygame.image.load(os.path.join(diretorio_imagens,'sprite1.jpg')).convert_alpha()
 fundo=scale (load('img/back1.png'),tamanho)
-display.set_caption('War Naves')
+display.set_caption('Cobra KKK')
 relogio = pygame.time.Clock()
 
-class Unicornio(pygame.sprite.Sprite):    
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.imagens_unicornio= []
-        for i in range(3):
-            img= sprite_sheet.subsurface((i*32,0),(32,32))
-            self.imagens_unicornio.append(img)
-
-        self.index_lista = 0
-        self.image = self.imagens_unicornio[self.index_lista]
-        self.rect = self.image.get_rect()
-        self.rect.center = (100,100)
-
-    def update(self):
-        if self.index_lista > 2:
-            self.index_lista =0
-        self.index_lista += 0.25
-        self.image = self.imagens_unicornio[int(self.index_lista)]
-        
-
-class Nave1(pygame.sprite.Sprite):    
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load('img/nav1.jpg')
-        self.rect = self.image.get_rect()
-        
-    
-class Magia1(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load('img/mg1.jpg')
-        self.rect = self.image.get_rect()  
-    def update(self):
-        ...
-        
-class Inimigo1(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load('img/ini1.png')
-        self.rect = self.image.get_rect()
-    def update(self):
-        ...
-
-
-
-nave = Nave1()
-inimigo1= Inimigo1() 
-grupo_magias = Group()
-grupo_inimigos = Group(inimigo1)
-grupo_nave= GroupSingle(nave)
-
-moving_sprites = pygame.sprite.Group()
-player = Player(100,100)
-moving_sprites.add(player)
-
-todas_as_sprites = pygame.sprite.Group()
-unicornio= Unicornio
-todas_as_sprites.add(unicornio)
-
-
-x = int(largura/2)
-y = int(altura/2 )
+ganhou = ('Parabens !!!')
 pontos = 0
-x_verde = randint (40, 300)
-y_verde = randint (80, 600)
-x_circ = randint (40, 300)  
-y_circ = randint (80, 600)
-fonte = pygame.font.SysFont("font/ARCADE.TTF", 40, True, True )
+x_jogador = randint (40, 300)
+y_jogador = randint (80, 600)
+x_maca = randint (40, 300)  
+y_maca = randint (80, 600)
+fonte = pygame.font.SysFont("font/ARCADE.TTF", 40, False, False )
+lista_cobra = []
+comprimento_inicial = 5
+velocidade = 5
+x_controle = 20
+y_controle = 0
+morreu = False
+
+def aumenta_cobra(lista_cobra):
+    for XeY in lista_cobra:
+        pygame.draw.rect(superficie,(0,255,0),(XeY[0],XeY[1],20,20))
+
+def reiniciar_jogo():
+    global pontos , comprimento_inicial , lista_cabeca , lista_cobra , morreu
+    pontos = 0
+    comprimento_inicial = 5
+    lista_cobra = []
+    lista_cabeca = []
+    morreu = False
 
 while True:
-    relogio.tick(160)
+    relogio.tick(30)
     
-    superficie.blit(fundo,
-    (0,0))
-    #Grupos
-    #grupo_nave.draw(superficie)
-    #grupo_inimigos.draw(superficie)
-    #grupo_magias.draw(superficie)
-    todas_as_sprites.draw(superficie)
-    todas_as_sprites.update()
-    #Letras na Tela
+    superficie.blit(fundo,(0,0))
+    mensagemwin = f'Ganhou {ganhou}'
     mensagem = f'Pontos: {pontos}'
+    texto_vitoria = fonte.render(mensagemwin,True,(255,255,255))
     texto_formatado = fonte.render(mensagem, True, (225,255,255))
     # Eventos 
     for event in pygame.event.get():
@@ -131,58 +81,107 @@ while True:
         
         if event.type == KEYDOWN:
             
-
             if event.key == K_a:
-                x = x - 20
+                if x_controle == velocidade:
+                    pass
+                else:
+                    x_controle = - velocidade
+                    y_controle = 0
             if event.key == K_d:
-                x = x + 20
+                if x_controle == - velocidade:
+                    pass
+                else:
+                    x_controle = velocidade 
+                    y_controle = 0
             if event.key == K_w:
-                y = y - 20 
+                if y_controle == velocidade:
+                    pass
+                else:
+                    x_controle = 0
+                    y_controle = - velocidade
             if event.key == K_s:
-                y = y + 20
-            if event.type == pygame.KEYDOWN:player.attack()
+                if y_controle == -velocidade:
+                    pass
+                else:
+                    x_controle = 0
+                    y_controle = velocidade
     
-
-
-    if pygame.key.get_pressed()[K_a]:
-        x = x - 8
-    if pygame.key.get_pressed()[K_d]:
-        x = x + 8
-    if pygame.key.get_pressed()[K_w]:
-        y = y - 8
-    if pygame.key.get_pressed()[K_s]:
-        y = y + 8
-
+    x_jogador = x_jogador + x_controle
+    y_jogador = y_jogador + y_controle 
     
-    ret_linha1= pygame.draw.line(superficie,(255,0,255),(0,altura),(0,0),5)
-    ret_linha2 = pygame.draw.line(superficie,(255,0,255),(0,0),(largura,0),5)
-    ret_linha3 = pygame.draw.line(superficie,(255,0,255),(altura,0),(altura,altura),5)
-    ret_linha4 = pygame.draw.line(superficie,(255,0,255),(largura,largura),(0,largura),5)
+    ret_linha1= pygame.draw.line(superficie,(0,0,255),(0,altura),(0,0),5)
+    ret_linha2 = pygame.draw.line(superficie,(0,0,255),(0,0),(largura,0),5)
+    ret_linha3 = pygame.draw.line(superficie,(0,0,255),(altura,0),(altura,altura),5)
+    ret_linha4 = pygame.draw.line(superficie,(0,0,255),(largura,largura),(0,largura),5)
     
-    ret_circ = pygame.draw.circle(superficie,(0,255,100),(x_circ,y_circ),40)    
-    jogador = pygame.draw.rect(superficie,(255,0,0),(x,y,40,50))    
-    ret_verde = pygame.draw.rect(superficie,(0,255,100),(x_verde,x_verde,40,50))
+    ret_circ = pygame.draw.circle(superficie,(0,255,0),(x_maca,y_maca),10)    
+    jogador = pygame.draw.rect(superficie,(0,255,0),(x_jogador,y_jogador,20,20))    
+    ret_maca = pygame.draw.circle(superficie,(0,255,100),(x_maca,x_maca),5)
     
     
-    (superficie,(x,y,40,50))
+    (superficie,(x_jogador,y_jogador,40,50))
     
-            
-
-
-    if jogador.colliderect(ret_verde):
-        x_verde = randint(40, largura)
-        y_verde = randint(80, altura)
+    if jogador.colliderect(ret_maca):
+        x_maca = randint(40, largura)
+        y_maca = randint(80, altura)
         pontos = pontos + 1
+        comprimento_inicial = comprimento_inicial + 10
         colisao_wi.play()
         
-
     if jogador.colliderect(ret_circ):
-        x_circ = randint(40, largura)
-        y_circ = randint(40, altura)
+        x_maca = randint(40, largura)
+        y_maca = randint(40, altura)
+        pontos = pontos - 1
+        comprimento_inicial = comprimento_inicial - 10
+        colisao_br.play() 
+
+    if jogador.colliderect(ret_linha1 ):
+        pontos = pontos - 1
+        colisao_br.play()  
+
+    if jogador.colliderect(ret_linha2):
+        pontos = pontos - 1
+        colisao_br.play()  
+
+    if jogador.colliderect(ret_linha3):
+        pontos = pontos - 1
+        colisao_br.play()  
+
+    if jogador.colliderect(ret_linha4):
         pontos = pontos - 1
         colisao_br.play()   
-   
-   
+
+    if pontos >= 10:
+        ganhou: superficie.blit(texto_vitoria,(200,0))
+    
+    
+
+    lista_cabeca = []
+    lista_cabeca.append (x_jogador)
+    lista_cabeca.append (y_jogador)
+    lista_cobra.append(lista_cabeca)
+
+    if lista_cobra.count(lista_cabeca)> 1:
+        fonte2 = pygame.font.SysFont('arial',20,True, True)
+        mensagem = 'Game Over! Precisone a tecla R para jogar novamente.'
+        texto_formatado = fonte2.render(mensagem,True,(0,0,0))
+        morreu = True
+        while morreu:
+            superficie.fil((255,255,255))
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == KEYDOWN:
+                   if event.key == K_r: 
+                    reiniciar_jogo()
+        superficie.blit(texto_formatado,largura//2,altura//2)
+        pygame.display.update()
+
+    if len(lista_cobra) > comprimento_inicial:
+        del lista_cobra [0]
+
+    aumenta_cobra(lista_cobra)
     superficie.blit(texto_formatado,(0,0))
 
     display.update()
