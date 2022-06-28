@@ -9,12 +9,17 @@ from random import randint
 
 pygame.init()
 
-altura = 640
-largura = 400
-tamanho = 640, 400
-tela= display.set_mode(size=(600,400), depth=0)
+musica_de_fundo = pygame.mixer.music.load('sounds/musicadefundo.mp3')
+pygame.mixer.music.play(-1)
+colisao_br = pygame.mixer.Sound('sounds/break_block.wav')
+colisao_wi = pygame.mixer.Sound('sounds/coin.wav')
+
+altura = 700
+largura = 800
+tamanho = altura , largura
+tela= display.set_mode(size=(tamanho), depth=0)
 display.set_caption('War Naves')
-fundo=scale ( load('img/cenario.jpg'), tamanho)
+fundo=scale ( load('img/cenario.jpg'),tamanho)
 relogio = pygame.time.Clock()
 
 
@@ -46,14 +51,14 @@ class Inimigo1(Sprite):
 inimigo1= Inimigo1() 
 magia= Magia1()
 nave= Nave1()
-x = largura/2
-y = altura/2 
+x = int(largura/2)
+y = int(altura/2 )
 pontos = 0
 x_verde = randint (40, 600)
 y_verde = randint (50, 430)
-x_circ = randint (40,600)
+x_circ = randint (40,600)  
 y_circ = randint (50,430)
-fonte = pygame.font.SysFont("Arial", 40, True, True )
+fonte = pygame.font.SysFont("font/ARCADE.TTF", 40, True, True )
 
 while True:
     relogio.tick(160)
@@ -82,9 +87,11 @@ while True:
     if pygame.key.get_pressed()[K_s]:
         y = y + 8
 
-    ret_linha1= pygame.draw.line(tela,(255,0,255),(0,600),(0,0),5)
-    ret_linha2 = pygame.draw.line(tela,(255,0,255),(0,0),(600,0),5)
-    ret_linha3 = pygame.draw.line(tela,(255,0,255),(600,0),(600,600),5)
+    ret_linha1= pygame.draw.line(tela,(255,0,255),(0,800),(0,0),5)
+    ret_linha2 = pygame.draw.line(tela,(255,0,255),(0,0),(700,0),5)
+    et_linha3 = pygame.draw.line(tela,(255,0,255),(700,0),(700,800),5)
+    ret_linha4 = pygame.draw.line(tela,(255,0,255),(800,800),(0,800),5)
+    
     ret_circ = pygame.draw.circle(tela,(0,255,100),(x_circ,y_circ),40)
     ret_vermelho = pygame.draw.rect(tela,(255,0,0),(x,y,40,50))
     ret_verde = pygame.draw.rect(tela,(0,255,0),(x_verde,y_verde,40,50))
@@ -93,13 +100,13 @@ while True:
         x_verde = randint(40, 600)
         y_verde = randint(50, 430)
         pontos = pontos + 1
+        colisao_wi.play()
     if ret_vermelho.colliderect(ret_circ):
         x_circ = randint(40, 600)
         y_circ = randint(50, 430)
         pontos = pontos - 1
-   
-   
-    tela.blit(texto_formatado,(410,10))
+        colisao_br.play()   
+    tela.blit(texto_formatado,(0,0))
 
 
     display.update()
