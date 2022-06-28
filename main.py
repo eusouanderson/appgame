@@ -1,5 +1,4 @@
-from itertools import count
-from turtle import update
+
 from pygame import display
 from pygame.image import load
 from pygame.transform import scale
@@ -165,9 +164,11 @@ while True:
         fonte2 = pygame.font.SysFont('arial',20,True, True)
         mensagem = 'Game Over! Precisone a tecla R para jogar novamente.'
         texto_formatado = fonte2.render(mensagem,True,(0,0,0))
+
+
         morreu = True
         while morreu:
-            superficie.fil((255,255,255))
+            superficie.fill((255,255,255))
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -175,13 +176,25 @@ while True:
                 if event.type == KEYDOWN:
                    if event.key == K_r: 
                     reiniciar_jogo()
-        superficie.blit(texto_formatado,largura//2,altura//2)
-        pygame.display.update()
+        
+
+            superficie.blit(texto_formatado,(40,200))
+            pygame.display.update()
+    if x_jogador > largura :
+        x_jogador = 0
+    if x_jogador < 0 :
+        x_jogador = largura
+    if y_jogador < 0 :
+        y_jogador = altura
+    if y_jogador > altura :
+        y_jogador = 0
+   
+    aumenta_cobra(lista_cobra)
 
     if len(lista_cobra) > comprimento_inicial:
         del lista_cobra [0]
 
-    aumenta_cobra(lista_cobra)
+   
     superficie.blit(texto_formatado,(0,0))
 
     display.update()
