@@ -1,4 +1,3 @@
-
 from pygame import display
 from pygame.image import load
 from pygame.transform import scale
@@ -63,8 +62,7 @@ def reiniciar_jogo():
     morreu = False
 
 while True:
-    relogio.tick(30)
-    
+    relogio.tick(30)    
     superficie.blit(fundo,(0,0))
     mensagemwin = f'Ganhou {ganhou}'
     mensagem = f'Pontos: {pontos}'
