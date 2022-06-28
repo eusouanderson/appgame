@@ -1,3 +1,4 @@
+from lib2to3.pytree import convert
 from turtle import update
 from pygame import display
 from pygame.image import load
@@ -10,9 +11,11 @@ from pygame.locals import QUIT
 from sys import exit
 from random import randint
 from pygame.sprite import Group, GroupSingle
+import os
 
-
-
+diretorio_principal = os.path.dirname(__file__)
+diretorio_imagens = os.path.join(diretorio_principal,'img')
+diretorio_soms = os.path.join(diretorio_principal,'sounds')
 pygame.init()
 
 VolumeS_do_game = 10
@@ -25,20 +28,34 @@ colisao_br = pygame.mixer.Sound('sounds/break_block.wav')
 colisao_br.set_volume(VolumeS_do_game)
 colisao_wi = pygame.mixer.Sound('sounds/coin.wav')
 colisao_wi.set_volume(VolumeS_do_game)
-# Tamanho de tela
+#Tela
 altura = 600
 largura = 600
 tamanho = largura , altura
 superficie= display.set_mode(size=(tamanho))
+sprite_sheet = pygame.image.load(os.path.join(diretorio_imagens,'sprite1.jpg')).convert_alpha()
 fundo=scale (load('img/back1.png'),tamanho)
 display.set_caption('War Naves')
 relogio = pygame.time.Clock()
 
-class unicornio(pygame.sprite.Sprite):    
+class Unicornio(pygame.sprite.Sprite):    
     def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load('img/sprite1.jpg')
+        pygame.sprite.Sprite.__init__(self)
+        self.imagens_unicornio= []
+        for i in range(3):
+            img= sprite_sheet.subsurface((i*32,0),(32,32))
+            self.imagens_unicornio.append(img)
+
+        self.index_lista = 0
+        self.image = self.imagens_unicornio[self.index_lista]
         self.rect = self.image.get_rect()
+        self.rect.center = (100,100)
+
+    def update(self):
+        if self.index_lista > 2:
+            self.index_lista =0
+        self.index_lista += 0.25
+        self.image = self.imagens_unicornio[int(self.index_lista)]
         
 
 class Nave1(pygame.sprite.Sprite):    
@@ -46,7 +63,6 @@ class Nave1(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('img/nav1.jpg')
         self.rect = self.image.get_rect()
-        
         
     
 class Magia1(pygame.sprite.Sprite):
@@ -65,11 +81,21 @@ class Inimigo1(pygame.sprite.Sprite):
     def update(self):
         ...
 
+
+
 nave = Nave1()
 inimigo1= Inimigo1() 
 grupo_magias = Group()
 grupo_inimigos = Group(inimigo1)
 grupo_nave= GroupSingle(nave)
+
+moving_sprites = pygame.sprite.Group()
+player = Player(100,100)
+moving_sprites.add(player)
+
+todas_as_sprites = pygame.sprite.Group()
+unicornio= Unicornio
+todas_as_sprites.add(unicornio)
 
 
 x = int(largura/2)
@@ -83,12 +109,15 @@ fonte = pygame.font.SysFont("font/ARCADE.TTF", 40, True, True )
 
 while True:
     relogio.tick(160)
+    
     superficie.blit(fundo,
     (0,0))
     #Grupos
     #grupo_nave.draw(superficie)
-    grupo_inimigos.draw(superficie)
+    #grupo_inimigos.draw(superficie)
     #grupo_magias.draw(superficie)
+    todas_as_sprites.draw(superficie)
+    todas_as_sprites.update()
     #Letras na Tela
     mensagem = f'Pontos: {pontos}'
     texto_formatado = fonte.render(mensagem, True, (225,255,255))
@@ -111,8 +140,8 @@ while True:
                 y = y - 20 
             if event.key == K_s:
                 y = y + 20
-            if event.key == K_SPACE:
-               ...
+            if event.type == pygame.KEYDOWN:player.attack()
+    
 
 
     if pygame.key.get_pressed()[K_a]:
@@ -158,7 +187,7 @@ while True:
 
     display.update()
  
-    
+  
 
     
 
