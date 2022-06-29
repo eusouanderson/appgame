@@ -67,7 +67,7 @@ class Cobra:
 def reiniciar_jogo():
     global pontos , comprimento_inicial , lista_cabeca , lista_cobra , morreu
     pontos = 0
-    comprimento_inicial = 5
+    comprimento_inicial = 1
     lista_cobra = []
     lista_cabeca = []
     morreu = False
