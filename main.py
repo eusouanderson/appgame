@@ -9,7 +9,7 @@ from pygame.locals import QUIT
 from sys import exit
 from random import randint
 from pygame.sprite import Group, GroupSingle
-
+import random 
 
 
 pygame.init()
@@ -41,6 +41,8 @@ x_jogador = randint (40, 300)
 y_jogador = randint (80, 600)
 x_maca = randint (40, 300)  
 y_maca = randint (80, 600)
+y_inimigo= randint (40 , 350)
+x_inimigo =randint (80, 300)
 fonte = pygame.font.SysFont("font/ARCADE.TTF", 40, False, False )
 lista_cobra = []
 comprimento_inicial = 5
@@ -48,10 +50,19 @@ velocidade = 5
 x_controle = 20
 y_controle = 0
 morreu = False
+r = random.randint(0,255)
+g = random.randint(0,255)
+b = random.randint(0,255)
+cor_da_cobra =  [r,g,b]
+cor_da_maca = [g,r,b]
 
-def aumenta_cobra(lista_cobra):
-    for XeY in lista_cobra:
-        pygame.draw.rect(superficie,(0,255,0),(XeY[0],XeY[1],20,20))
+class Cobra:
+    def aumenta_cobra(lista_cobra):
+        for XeY in lista_cobra:
+            pygame.draw.rect(superficie,(cor_da_cobra),(XeY[0],XeY[1],20,20))
+    def __init__(self,cor_da_cobra):
+        self.cor_da_cobra = cor_da_cobra
+
 
 def reiniciar_jogo():
     global pontos , comprimento_inicial , lista_cabeca , lista_cobra , morreu
@@ -60,6 +71,7 @@ def reiniciar_jogo():
     lista_cobra = []
     lista_cabeca = []
     morreu = False
+    
 
 while True:
     relogio.tick(30)    
@@ -105,15 +117,14 @@ while True:
     
     x_jogador = x_jogador + x_controle
     y_jogador = y_jogador + y_controle 
-    
     ret_linha1= pygame.draw.line(superficie,(0,0,255),(0,altura),(0,0),5)
     ret_linha2 = pygame.draw.line(superficie,(0,0,255),(0,0),(largura,0),5)
     ret_linha3 = pygame.draw.line(superficie,(0,0,255),(altura,0),(altura,altura),5)
     ret_linha4 = pygame.draw.line(superficie,(0,0,255),(largura,largura),(0,largura),5)
     
-    ret_circ = pygame.draw.circle(superficie,(0,255,0),(x_maca,y_maca),10)    
-    jogador = pygame.draw.rect(superficie,(0,255,0),(x_jogador,y_jogador,20,20))    
-    ret_maca = pygame.draw.circle(superficie,(0,255,100),(x_maca,x_maca),5)
+    ret_circ = pygame.draw.circle(superficie,(0,2,0),(x_inimigo,y_inimigo),10)    
+    jogador = pygame.draw.rect(superficie,(0,2,0),(x_jogador,y_jogador,20,20))    
+    ret_maca = pygame.draw.circle(superficie,(cor_da_maca),(x_maca,x_maca),5)
     
     
     (superficie,(x_jogador,y_jogador,40,50))
@@ -121,13 +132,15 @@ while True:
     if jogador.colliderect(ret_maca):
         x_maca = randint(40, largura)
         y_maca = randint(80, altura)
-        pontos = pontos + 1
+        pontos = pontos + 1 
         comprimento_inicial = comprimento_inicial + 10
         colisao_wi.play()
         
     if jogador.colliderect(ret_circ):
         x_maca = randint(40, largura)
         y_maca = randint(40, altura)
+        y_inimigo= randint(80,largura)
+        x_inimigo = randint(50,altura)
         pontos = pontos - 1
         comprimento_inicial = comprimento_inicial - 10
         colisao_br.play() 
@@ -150,8 +163,9 @@ while True:
 
     if pontos >= 10:
         ganhou: superficie.blit(texto_vitoria,(200,0))
-    
-    
+        
+    if pontos + 1 :
+        cor_da_cobra = ([r,g,b])
 
     lista_cabeca = []
     lista_cabeca.append (x_jogador)
@@ -187,7 +201,8 @@ while True:
     if y_jogador > altura :
         y_jogador = 0
    
-    aumenta_cobra(lista_cobra)
+    
+    Cobra.aumenta_cobra(lista_cobra)
 
     if len(lista_cobra) > comprimento_inicial:
         del lista_cobra [0]
