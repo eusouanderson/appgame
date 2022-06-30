@@ -20,12 +20,12 @@ pygame.init
 
 largura ,altura = 700 , 500 
 tamanho_nave = 100, 100
-
+missel = pygame.image.load('img/lith1.png')
 
 tela = pygame.display.set_mode((largura,altura))
 pygame.display.set_caption ('War Naves')
 
- 
+
 img= pygame.image.load('img/back2.png')
 final = True
 objects =[]
@@ -50,12 +50,7 @@ class Nave(pygame.sprite.Sprite):
         self.sprites.append(pygame.image.load('navei/redfighter0004.png'))#center
         self.sprites.append(pygame.image.load('navei/redfighter0003.png'))#dir
         self.sprites.append(pygame.image.load('navei/redfighter0002.png'))#dir
-        self.sprites.append(pygame.image.load('navei/redfighter0001.png'))#dir
-        self.atual = 0
-        self.animar = False
-        self.image = self.sprites[self.atual]
-        self.rect = self.image.get_rect(center=(400,300))
-    def poder(self):
+        self.sprites.append(pygame.image.load('navei/redfighter0001.png'))#dir      
         self.sprites.append(pygame.image.load('navei/redfighternormal0001.png'))    
         self.sprites.append(pygame.image.load('navei/redfighternormal0002.png'))    
         self.sprites.append(pygame.image.load('navei/redfighternormal0003.png'))    
@@ -64,11 +59,23 @@ class Nave(pygame.sprite.Sprite):
         self.sprites.append(pygame.image.load('navei/redfighternormal0006.png'))    
         self.sprites.append(pygame.image.load('navei/redfighternormal0007.png'))    
         self.sprites.append(pygame.image.load('navei/redfighternormal0008.png'))    
-        self.sprites.append(pygame.image.load('navei/redfighternormal0009.png'))  
-        self.image = self.power[self.animar]
-        self.rect = self.image.get_rect(center=(400,300))  
+        self.sprites.append(pygame.image.load('navei/redfighternormal0009.png'))
+        self.sprites.append(pygame.image.load('navei/redfighternormal0008.png'))    
+        self.sprites.append(pygame.image.load('navei/redfighternormal0007.png'))    
+        self.sprites.append(pygame.image.load('navei/redfighternormal0006.png'))    
+        self.sprites.append(pygame.image.load('navei/redfighternormal0005.png'))    
+        self.sprites.append(pygame.image.load('navei/redfighternormal0004.png'))    
+        self.sprites.append(pygame.image.load('navei/redfighternormal0003.png'))    
+        self.sprites.append(pygame.image.load('navei/redfighternormal0002.png'))    
+        self.sprites.append(pygame.image.load('navei/redfighternormal0001.png'))    
+        self.missel = pygame.image.load('img/lith1.png')
+        self.atual = 0
+        self.animar = False
+        self.image = self.sprites[self.atual]
+        self.rect = self.image.get_rect(center=(400,300))
+         
     def update(self):
-        
+        self.missel = True
         self.animar = self.animar + 0.15
         self.animar = True
         if self.animar >= len(self.power):
@@ -126,15 +133,16 @@ while final:
      
     
     tela.blit(img,(0,0))
-    rel_y = movetela % img.get_rect().height
-    tela.blit(img,(rel_y - img.get_rect().height,1 ))
+    rel_y = 0 % img.get_rect().height
+    tela.blit(img,(rel_y - img.get_rect().height,10 ))
     if rel_y < 500 :
         tela.blit(img,(rel_y, 1))
-    movetela -=  1
+    movetela-=  1
     
     group_nave.draw(tela)
     
-    
+    missel.get_rect(center =(x,y))
+    tela.blit(missel,(x,y))
   
 
     group_nave.update()
