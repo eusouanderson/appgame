@@ -1,6 +1,8 @@
-from email.mime import image
-from re import X
-from tkinter import CENTER
+from calendar import c
+from cmath import rect
+from shutil import move
+from socket import ntohl
+from flask import g
 from pygame import display
 from pygame.image import load
 from pygame.transform import scale
@@ -12,7 +14,9 @@ from pygame.locals import QUIT
 from sys import exit
 from random import randint
 from pygame.sprite import Group, GroupSingle
-import random 
+import random
+
+
 
 
 
@@ -24,11 +28,10 @@ tamanho_nave = 100, 100
 tela = pygame.display.set_mode((largura,altura))
 pygame.display.set_caption ('War Naves')
 
+ 
 img= pygame.image.load('img/back2.png')
-x = 300
-y = 300
 final = True
-toplef = x , y
+objects =[]
 class Nave(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -52,22 +55,24 @@ class Nave(pygame.sprite.Sprite):
         self.sprites.append(pygame.image.load('navei/redfighter0001.png'))#dir
         self.atual = 0
         self.image = self.sprites[self.atual]
-        self.rect = self.image.get_rect()
-        self.rect.topleft = x, y 
-        #self.image = pygame.transform.scale(self.image,(128,128))
-        
-
+        self.rect = self.image.get_rect(center=(400,300))
     def update(self):
+        self.rect = self.image.get_rect( center =(x,y))
+        
         self.atual = self.atual + 0.15
         if self.atual >= len(self.sprites):
             self.atual = 0
         self.image = self.sprites[int(self.atual)]
-        self.image = pygame.transform.scale(self.image,(tamanho_nave))
+        self.image = pygame.transform.scale(self.image,(tamanho_nave)) 
+x = 30
+y = 30
+x = x+ 300
+y = y+ 300
+  
         
+   
 
- 
-
-
+       
 group_nave = pygame.sprite.Group()
 group_nave.add(Nave())
 
@@ -79,27 +84,36 @@ while final:
         if event.type == pygame.QUIT:
             final = False
             pygame.quit()
-           
-        if event.type == KEYDOWN:
-            
-            if event.key == K_a:
-                 x =+ 20
-                 y = 0
-                   
-            if event.key == K_d:
-                 x = -20
-                 y = 0
-            if event.key == K_w:
-                 x = 0
-                 y = 20
-                  
-            if event.key == K_s:
-                 x = 0
-                 y = -20
-    
+
+    userInput = pygame.key.get_pressed()
+    if userInput[pygame.K_a]:
+            x = x - 4
+            y = y + 0
+    if userInput[pygame.K_d]:
+            x = x + 4
+            y = y - 0
+    if userInput[pygame.K_w]:
+            x = x + 0
+            y = y - 4
+                
+    if userInput[pygame.K_s]:
+            x = x - 0
+            y = y + 4
+               
+                
+  
+
     
     tela.blit(img,(0,0))
+    #rel_y = y % img.get_rect().height
+    #tela.blit(img,(rel_y - img.get_rect(). height,1 ))
+    '''if rel_y < 500 :
+        tela.blit(img,(rel_y, 1))
+    y-= 1'''
     group_nave.draw(tela)
+    
+    
+  
 
     group_nave.update()
     pygame.display.flip()
