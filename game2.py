@@ -101,7 +101,7 @@ class Nave(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(400,300))
     def update(self):
        
-            self.atual = self.atual + 0.25
+            self.atual = self.atual + 0.35
             if self.atual >= len(self.sprites):
                 self.atual = -1
             self.image = self.sprites[int(self.atual)]
@@ -152,7 +152,7 @@ while final:
      
     
     tela.blit(img,(0,0))
-    rel_y = 0 % img.get_rect().height
+    rel_y = movetela % img.get_rect().height
     tela.blit(img,(rel_y - img.get_rect().height,10 ))
     if rel_y < 500 :
         tela.blit(img,(rel_y, 1))
