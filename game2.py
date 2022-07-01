@@ -1,10 +1,6 @@
 
-from ast import While
-from asyncore import loop
-from cmath import rect
-from timeit import repeat
-from tracemalloc import start, stop
-from turtle import end_fill
+from gc import get_freeze_count
+from tracemalloc import get_traced_memory
 import pygame
 from pygame.locals import * 
 from pygame.locals import QUIT
@@ -42,44 +38,49 @@ class Tela(pygame.sprite.Sprite):
         self.sprites.append(pygame.image.load('img/back2.png'))          
         self.sprites.append(pygame.image.load('img/back3.png'))          
         self.sprites.append(pygame.image.load('img/back4.png'))   
-        self.image = self.sprites[+3]
-        self.rect = self.image.get_rect(center=(230,80))       
+        self.image = self.sprites[0]
+        self.rect = self.image.get_rect(center=(0,0))       
     def update(self):
-        ...
+        
+        self.rect.y += 5 
+        self.rect.y -= +1 
+        self.sprites[0]
+        if  self.rect.y == -0 :
+                self.sprites[1]            
+                self.rect.y += 5
+                self.rect.y -= +1 
 
 
 class Inimigos(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self) 
-        self.inimigo1 = []
-        self.inimigo2 = []
-        self.inimigo3 = []
-        self.inimigo4 = []
-        self.inimigo5 = []
-        self.inimigo6 = []
-        self.inimigo1.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship1/Ship1.png'))
-        self.inimigo2.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship2/Ship2.png'))
-        self.inimigo3.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship3/Ship3.png'))
-        self.inimigo4.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship4/Ship4.png'))
-        self.inimigo5.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship5/Ship5.png'))
-        self.inimigo6.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship6/Ship6.png'))
-        self.image = self.inimigo1[0] 
-        self.image = self.inimigo2[0]
-        self.image = self.inimigo3[0]
-        self.image = self.inimigo4[0]
-        self.image = self.inimigo5[0]
-        self.image = self.inimigo6[0]
-        self.list = list(group_inimigos)
+        self.inimigo = []
+        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship1/Ship1.png'))
+        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship2/Ship2.png'))
+        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship3/Ship3.png'))
+        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship4/Ship4.png'))
+        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship5/Ship5.png'))
+        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship6/Ship6.png'))
+        self.atual = 0
+        self.image = self.inimigo[0]
         self.rect = self.image.get_rect(center=(230,80))
-        self.rect = self.image.get_rect(center=(250,60))
+        self.rect = self.rect
+        #self.rect = pygame.transform.rotate(-90)
+        
         
     def update(self):
-        self.list.index
+        
+        
+        self.atual = self.atual + 0.1
+        if self.atual >= len(self.inimigo):        
+                self.atual = 0
+        self.image = self.inimigo[int(self.atual)]
+       
         if  self.rect.x :
             self.rect.x -= +1 
         if  self.rect.x == -0 :
             self.rect.x += 500
-            self.rect.x = 30
+           
            
     
 
@@ -92,13 +93,13 @@ class Laser(pygame.sprite.Sprite):
         
         
     def update(self): 
-       group_laser.draw(tela)
-       if tecla_f:
-        
-        self.rect.y -= 1
+             if tecla_f:
+                while self.rect.y < 4 :
+                    self.rect.y -= 10
+                    group_laser.draw(tela)
+                    
 
-        if self.rect.y >= tamanho[0]:
-            self.kill()
+           
          
         #self.rect = self.image.get_rect(center = (x,y))
 
@@ -140,7 +141,8 @@ class Nave(pygame.sprite.Sprite):
         self.sprites.append(pygame.image.load('navei/redfighternormal0003.png'))    #32
         self.sprites.append(pygame.image.load('navei/redfighternormal0002.png'))    #33
         self.sprites.append(pygame.image.load('navei/redfighternormal0001.png'))    #34
-        self.atual = True
+        self.atual = 0
+        self.esquerda = self.sprites.sort
         self.image = self.sprites[0]
         self.rect = self.image.get_rect(center=(400,300))
     
@@ -165,9 +167,11 @@ group_laser.add(Laser())
 group_inimigos.add(Inimigos())
 group_tela = pygame.sprite.Group()
 group_tela.add(Tela())
- 
+
+clock = pygame.time.Clock()
 
 while final:
+    clock= 150 
     
 
     for event in pygame.event.get():
@@ -210,16 +214,18 @@ while final:
      
     
     tela.blit(tela,(0,0))
-    rel_y = y % img.get_rect().height
+    
+    rel_y = movetela % img.get_rect().height
     tela.blit(img,(rel_y - img.get_rect().height,10 ))
     if rel_y < 500 :
         tela.blit(img,(rel_y, 1))
-    y-=  1
+    movetela-=  1
 
     group_tela.draw(tela)
     group_inimigos.draw(tela)
     group_nave.draw(tela)
     
+    group_tela.update()
     group_laser.update()
     group_inimigos.update()
     group_nave.update()
