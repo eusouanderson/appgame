@@ -1,4 +1,8 @@
-from json import load
+
+from ast import While
+from asyncore import loop
+from timeit import repeat
+from turtle import end_fill
 import pygame
 from pygame.locals import * 
 from pygame.locals import QUIT
@@ -14,7 +18,7 @@ import random
 
 pygame.init
 
-VolumeM_do_game = 1
+VolumeM_do_game = 0
 pygame.mixer.init()
 musica_de_fundo = pygame.mixer.music.load('sounds/musicadefundo.mp3')
 pygame.mixer.music.set_volume(VolumeM_do_game)
@@ -42,7 +46,9 @@ class Inimigos(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(250,50))
 
     def update(self):
-         self.rect.x -= 1 
+        if  self.rect.x :
+            self.rect.x -= 1 
+           
     
 
 class Laser(pygame.sprite.Sprite):
@@ -52,12 +58,22 @@ class Laser(pygame.sprite.Sprite):
         self.image = pygame.image.load('img/lith1.png')
         self.rect = self.image.get_rect(center=(x,y))
         
+       
 
-
-
-    def update(self):
-        self.rect.y -= 10  
-            
+    def update(self): 
+        if tecla_f :
+         if  self.rect.y :
+              self.rect.y -= 10 
+        repeat 
+        if tecla_f:
+            if  self.rect.y :
+              self.rect.y -= 10 
+        
+        
+        
+      
+    
+   
         
 
             
@@ -106,11 +122,11 @@ class Nave(pygame.sprite.Sprite):
         
         
         self.atual = True
-        self.image = self.sprites[4]
+        self.image = self.sprites[0]
         self.rect = self.image.get_rect(center=(400,300))
-
     def atirar_laser(self):
-        self.laser.add(Laser(self.rect.center))
+            ...
+        #self.laser.add(Laser(self.rect.center))
             
         
 
@@ -123,7 +139,7 @@ class Nave(pygame.sprite.Sprite):
             self.rect = self.image.get_rect( center =(x,y))
             if userInput[pygame.K_SPACE]:                
                           
-                self.ligth = False
+                self.ligth = True
                 
 
         
@@ -169,11 +185,12 @@ while final:
             x = x - 0
             y = y + 4
     if  userInput[pygame.K_f]:
-        Nave.atirar_laser()
+        ...
+
     if userInput[pygame.K_SPACE]:
         tamanho_nave = 200 , 200
     
-  
+    tecla_f = userInput[pygame.K_f]
 
     movetela= 30
      
