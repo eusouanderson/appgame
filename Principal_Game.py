@@ -1,54 +1,57 @@
 
-from gc import get_freeze_count
-from tracemalloc import get_traced_memory
 import pygame
 from pygame.locals import * 
 from pygame.locals import QUIT
 from random import randint
-from pygame.sprite import Group, GroupSingle ,Sprite
+
 import random
 
-pygame.init
-
-VolumeM_do_game = 0
-pygame.mixer.init()
-musica_de_fundo = pygame.mixer.music.load('sounds/musicadefundo.mp3')
-pygame.mixer.music.set_volume(VolumeM_do_game)
-pygame.mixer.music.play(-5)
+pygame.init()
 
 
-largura ,altura = 700 , 500 
-final = True
+#Configuracoes 
+# Tela
+largura ,altura = 800 , 700 
+x = largura
+y = altura
+
+rodando = True
 objects =[]
-final = True
 tamanho = largura , altura
+font = pygame.font.SysFont('font/ARCADE.TTF', 50)
+# Nave 
+veL_nave = 5
+vel_x_missil = 0
+pos_x_missil = largura/2
+pos_y_missil = altura/2
+
+pos_allien_x = 700
+pos_allien_y = 360
+
+pos_player_x = largura/2
+pos_player_y = altura/2
+
+pontos = 10
+triggered = False
 
 tamanho_nave = 100, 100
 
-tela = pygame.display.set_mode((tamanho))
+screen = pygame.display.set_mode((tamanho))
 pygame.display.set_caption ('War Naves')
 
 img= pygame.image.load('img/back2.png')
 
-class Tela(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self) 
-        self.sprites = []
-        self.sprites.append(pygame.image.load('img/back1.png'))          
-        self.sprites.append(pygame.image.load('img/back2.png'))          
-        self.sprites.append(pygame.image.load('img/back3.png'))          
-        self.sprites.append(pygame.image.load('img/back4.png'))   
-        self.image = self.sprites[0]
-        self.rect = self.image.get_rect(center=(0,0))       
-    def update(self):
-        
-        self.rect.y += 5 
-        self.rect.y -= +1 
-        self.sprites[0]
-        if  self.rect.y == -0 :
-                self.sprites[1]            
-                self.rect.y += 5
-                self.rect.y -= +1 
+missil = pygame.image.load('img/lith1.png')
+missil = pygame.transform.scale(missil,(50,50))
+missil = pygame.transform.rotate(missil, -45)
+
+missil_rect = missil.get_rect() 
+
+
+missil_rect.y = pos_y_missil
+missil_rect.x = pos_x_missil
+
+
 
 
 class Inimigos(pygame.sprite.Sprite):
@@ -62,46 +65,44 @@ class Inimigos(pygame.sprite.Sprite):
         self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship5/Ship5.png'))
         self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship6/Ship6.png'))
         self.atual = 0
-        self.image = self.inimigo[0]
+        self.image = self.inimigo[1]
         self.rect = self.image.get_rect(center=(230,80))
         self.rect = self.rect
-        #self.rect = pygame.transform.rotate(-90)
-        
         
     def update(self):
         
         
         self.atual = self.atual + 0.1
         if self.atual >= len(self.inimigo):        
-                self.atual = 0
-        self.image = self.inimigo[int(self.atual)]
-       
+            self.rect
         if  self.rect.x :
-            self.rect.x -= +1 
+                self.rect.x -= 1 
         if  self.rect.x == -0 :
-            self.rect.x += 500
+                self.rect.x += 500 
            
-           
-    
+aumentando_magia = 50,50           
+   
 
-class Laser(pygame.sprite.Sprite):
+class Missil(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self) 
 
-        self.image = pygame.image.load('img/lith1.png')
+        """self.image = pygame.image.load('img/lith1.png')
+        self.scale =pygame.transform.scale(missil,(50,50))
         self.rect = self.image.get_rect(center=(x,y))
+        missil = pygame.transform.rotate(missil, -45)"""
+
+    def update():
+
+        ...
         
-        
-    def update(self): 
-             if tecla_f:
-                while self.rect.y < 4 :
-                    self.rect.y -= 10
-                    group_laser.draw(tela)
+      
+              
                     
 
            
          
-        #self.rect = self.image.get_rect(center = (x,y))
+    
 
 class Nave(pygame.sprite.Sprite):
     def __init__(self):
@@ -142,7 +143,6 @@ class Nave(pygame.sprite.Sprite):
         self.sprites.append(pygame.image.load('navei/redfighternormal0002.png'))    #33
         self.sprites.append(pygame.image.load('navei/redfighternormal0001.png'))    #34
         self.atual = 0
-        self.esquerda = self.sprites.sort
         self.image = self.sprites[0]
         self.rect = self.image.get_rect(center=(400,300))
     
@@ -152,25 +152,40 @@ class Nave(pygame.sprite.Sprite):
                     self.atual = 0
             self.image = self.sprites[int(self.atual)]
             self.image = pygame.transform.scale(self.image,(tamanho_nave)) 
-            self.rect = self.image.get_rect( center =(x,y))
-           
-x = 30
-y = 30
-x = x+ 300
-y = y+ 300
+            self.rect = self.image.get_rect( center =(pos_player_x,pos_player_y))
+         # Funcoes 
+
+def respawn():
+    x = random.randint(1,500)
+    y = 600
+    return [x,y]
+def respawn_missil():
+    triggered = False
+    respawn_missil_x = pos_player_x
+    respawn_missil_y = pos_player_y
+    vel_x_missil = 1
+    return[respawn_missil_x,respawn_missil_y, triggered, vel_x_missil]
+
+
+
       
 group_inimigos = pygame.sprite.Group()
+
+
 group_nave = pygame.sprite.Group()
-group_laser = pygame.sprite.Group()
+
 group_nave.add(Nave())
-group_laser.add(Laser())
+
 group_inimigos.add(Inimigos())
-group_tela = pygame.sprite.Group()
-group_tela.add(Tela())
+
+
+
+
+
 
 clock = pygame.time.Clock()
 
-while final:
+while rodando:
     clock= 150 
     
 
@@ -180,54 +195,58 @@ while final:
             pygame.quit()
 
     userInput = pygame.key.get_pressed()
-    joy = pygame.joystick.get_count
-    tamanho_nave = 100, 100
     
-    if userInput[pygame.K_a]: 
-            x = x - 4
-            y = y + 0
-    if userInput[pygame.K_d]: 
-            x = x + 4
-            y = y - 0
-    if userInput[pygame.K_w]: 
-            x = x + 0
-            y = y - 4
-                
-    if userInput[pygame.K_s]: 
-            x = x - 0
-            y = y + 4
-    if  userInput[pygame.K_f]:
-        ...
-    
-    if userInput[pygame.K_SPACE]:
-        tamanho_nave = 200 , 200
-    
-        ...
+    if userInput[pygame.K_a] and pos_player_x > 44 : 
+            pos_player_x = pos_player_x - veL_nave
+            pos_player_y = pos_player_y + 0
+            if not triggered:
+                pos_x_missil = pos_x_missil - veL_nave
+                pos_y_missil = pos_y_missil + 0
+    if userInput[pygame.K_d] and pos_player_x < 655 :
+            pos_player_x = pos_player_x + veL_nave
+            pos_player_y = pos_player_y - 0
+            if not triggered:
+                pos_x_missil = pos_x_missil + veL_nave
+                pos_y_missil = pos_y_missil - 0
+    if userInput[pygame.K_w]and pos_player_y > 44: 
+            pos_player_x = pos_player_x + 0
+            pos_player_y = pos_player_y - veL_nave
+            if not triggered:
+                pos_x_missil = pos_x_missil + 0 
+                pos_y_missil = pos_y_missil - veL_nave
+    if userInput[pygame.K_s] and pos_player_y < 455: 
+            pos_player_x = pos_player_x - 0
+            pos_player_y = pos_player_y + veL_nave
+            if not triggered:
+                pos_x_missil = pos_x_missil - 0
+                pos_y_missil = pos_y_missil + veL_nave
+    if userInput[pygame.K_SPACE] and pos_player_x :
+            triggered = True
+            vel_x_missil = 1
 
+    if pos_x_missil == 600:
+        pos_x_missil, pos_y_missil, triggered, vel_x_missil = respawn_missil()
 
-
-    tecla_f = userInput[pygame.K_f]
  
-     
-    
-    movetela= 30
-     
-    
-    tela.blit(tela,(0,0))
-    
-    rel_y = movetela % img.get_rect().height
-    tela.blit(img,(rel_y - img.get_rect().height,10 ))
-    if rel_y < 500 :
-        tela.blit(img,(rel_y, 1))
-    movetela-=  1
+        # Movimento
 
-    group_tela.draw(tela)
-    group_inimigos.draw(tela)
-    group_nave.draw(tela)
+    pos_y_missil -= vel_x_missil
     
-    group_tela.update()
-    group_laser.update()
-    group_inimigos.update()
+   
+    screen.blit(img,(0, 0))
+
+   
+    #group_tela.draw(tela)
+    #group_inimigos.draw(tela)
+    
+    pygame.draw.rect(screen,(255,0,0),missil_rect,-1)
+    screen.blit(missil,(pos_x_missil,pos_y_missil))
     group_nave.update()
+    group_nave.draw(screen)
+    #group_tela.update()
+    #group_laser.update()
+    #group_inimigos.update()
+    
+   
     pygame.display.flip()
 
