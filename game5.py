@@ -133,7 +133,7 @@ while rodando:
             vel_x_missil = 1
     #Regras
     if pontos == -1:
-        rodando = False
+        rodando = True
 
 
     # rerspawn
