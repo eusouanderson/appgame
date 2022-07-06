@@ -1,4 +1,5 @@
 
+
 import pygame
 from pygame.locals import * 
 from pygame.locals import QUIT
@@ -7,7 +8,8 @@ from random import randint
 import random
 
 pygame.init()
-
+pygame.font.init()
+# Sound
 VolumeM_do_game = 1
 pygame.mixer.init()
 pygame.mixer.music.load('sounds/Flies By The Fire.wav')
@@ -18,14 +20,14 @@ pygame.mixer.music.play()
 
 #Configuracoes 
 # Tela
-largura ,altura = 600 , 600 
+largura ,altura = 600 , 700 
 x = largura
 y = altura
 
 rodando = True
 objects =[]
 tamanho = largura , altura
-font = pygame.font.SysFont('font/ARCADE.TTF', 50)
+font = pygame.font.Font('font/ARCADE_N.TTF', 20)
 
 # Nave 
 veL_nave = 5
@@ -41,11 +43,13 @@ pos_player_x = largura/2
 pos_player_y = altura/2
 
 pontos = 10
-# Sound
 
+#imagens 
 
-
-
+tela_inicial2= pygame.image.load('img/inicial (2).png')
+tela_inicial2= pygame.transform.scale(tela_inicial2,(largura,altura))
+tela_inicial= pygame.image.load('img/inicial.png')
+tela_inicial= pygame.transform.scale(tela_inicial,(largura,altura))
 
 # Config Nave
 triggered = False
@@ -55,72 +59,104 @@ tamanho_nave = 100, 100
 screen = pygame.display.set_mode((tamanho))
 pygame.display.set_caption ('War Naves')
 
-img= pygame.image.load('img/back2.png')
+
+img= pygame.image.load('img/back1.png')
+img= pygame.transform.scale(img,(largura,altura))
+
+img2= pygame.image.load('img/back2.png')
+img2= pygame.transform.scale(img2,(largura,altura))
+
+img3= pygame.image.load('img/back3.png')
+img3= pygame.transform.scale(img3,(largura,altura))
+
+img4= pygame.image.load('img/back4.png')
+img4= pygame.transform.scale(img4,(largura,altura))
+
+img5= pygame.image.load('img/back5.jpg')
+img5= pygame.transform.scale(img5,(largura,altura))
 
 missil = pygame.image.load('img/lith1.png')
 missil = pygame.transform.scale(missil,(50,50))
 missil = pygame.transform.rotate(missil, -45)
+missil = pygame.transform.rotate(missil,random.randint(1,100))
 
 missil_rect = missil.get_rect() 
 
 missil1 = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Explosions/Explosion3/Explosion3_4.png')
-missil1 = pygame.transform.scale(missil,(500,550))
-missil1 = pygame.transform.rotate(missil, -45)
+missil1 = pygame.transform.scale(missil,(50,50))
+missil1 = pygame.transform.rotate(missil,random.randint(1,100))
+enemissil1 = pygame.transform.scale(missil1,(50,50))
+enemissil1 = pygame.transform.rotate(missil1,random.randint(1,100))
 
-missil1_rect = missil1.get_rect() 
 
-alien = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship4/Ship4.png')
-alien = pygame.transform.scale(alien,(100,100))
+# ALLIENS 
 
-pos_allien_x = 300
+
+alien = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship1/Ship1.png')
+alien = pygame.transform.scale(alien,(50,50))
+alien = pygame.transform.rotate(alien, -45)
+
+alien1 = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship2/Ship2.png')
+alien1 = pygame.transform.scale(alien,(50,50))
+alien1 = pygame.transform.rotate(alien, -45)
+
+alien2 = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship3/Ship3.png')
+alien2 = pygame.transform.scale(alien,(50,50))
+alien2 = pygame.transform.rotate(alien, -45)
+
+alien3 = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship4/Ship4.png')
+alien3 = pygame.transform.scale(alien,(50,50))
+alien3 = pygame.transform.rotate(alien, -45)
+
+alien4 = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship5/Ship5.png')
+alien4 = pygame.transform.scale(alien,(50,50))
+alien4 = pygame.transform.rotate(alien, -45)
+
+alien5 = pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship6/Ship6.png')
+
+alien5 = pygame.transform.scale(alien,(50,50))
+alien5 = pygame.transform.rotate(alien, -45)
+
 pos_allien_y = 300
+pos_allien_x = 300
+
+
+# RECT
 alien_rect = alien.get_rect()
+alien1_rect =alien1.get_rect()
+alien2_rect =alien2.get_rect()
+alien3_rect =alien3.get_rect()
+alien4_rect = alien4.get_rect()
+missil1_rect = missil1.get_rect()
 
 
-class Inimigos(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self) 
-        self.inimigo = []
-        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship1/Ship1.png'))
-        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship2/Ship2.png'))
-        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship3/Ship3.png'))
-        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship4/Ship4.png'))
-        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship5/Ship5.png'))
-        self.inimigo.append(pygame.image.load('enemy/PNG_Parts&Spriter_Animation/Ship6/Ship6.png'))
-        self.atual = 0
-        self.image = self.inimigo[1]
-        self.rect = self.image.get_rect(center=(230,80))
-        self.rect = self.rect
-        
-    def update(self):
-        
-        
-        self.atual = self.atual + 0.1
-        if self.atual >= len(self.inimigo):        
-            self.rect
-        if  self.rect.x :
-                self.rect.x -= 1 
-        if  self.rect.x == -0 :
-                self.rect.x += 500 
-           
-aumentando_magia = 50,50           
+img_rect = img.get_rect()
+img2_rect = img2.get_rect()
+img3_rect = img3.get_rect()
+img4_rect = img4.get_rect()
+screen_rect = screen.get_rect()
+img_rect.y -= 1 
+tela_inicial_rect = tela_inicial.get_rect()
+
+
+aumentando_magia = 50,50          
    
-
+              
 
       
 class Nave(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.sprites = []       
-        self.sprites.append(pygame.image.load('navei/redfighter0001.png'))          #1
-        self.sprites.append(pygame.image.load('navei/redfighter0002.png'))          #2
-        self.sprites.append(pygame.image.load('navei/redfighter0003.png'))          #3
-        self.sprites.append(pygame.image.load('navei/redfighter0004.png'))          #4
-        self.sprites.append(pygame.image.load('navei/redfighter0005.png'))          #5
-        self.sprites.append(pygame.image.load('navei/redfighter0006.png'))          #6
-        self.sprites.append(pygame.image.load('navei/redfighter0007.png'))          #7
-        self.sprites.append(pygame.image.load('navei/redfighter0008.png'))          #8
-        self.sprites.append(pygame.image.load('navei/redfighter0009.png'))          #9
+        self.sprites.append(pygame.image.load('navei/redfighter0001.png'))          #1 esq
+        self.sprites.append(pygame.image.load('navei/redfighter0002.png'))          #2 esq
+        self.sprites.append(pygame.image.load('navei/redfighter0003.png'))          #3 esq
+        self.sprites.append(pygame.image.load('navei/redfighter0004.png'))          #4 esq
+        self.sprites.append(pygame.image.load('navei/redfighter0005.png'))          #5 meio
+        self.sprites.append(pygame.image.load('navei/redfighter0006.png'))          #6 dir
+        self.sprites.append(pygame.image.load('navei/redfighter0007.png'))          #7 dir
+        self.sprites.append(pygame.image.load('navei/redfighter0008.png'))          #8 dir
+        self.sprites.append(pygame.image.load('navei/redfighter0009.png'))          #9 dir
         self.sprites.append(pygame.image.load('navei/redfighter0008.png'))          #10
         self.sprites.append(pygame.image.load('navei/redfighter0007.png'))          #11
         self.sprites.append(pygame.image.load('navei/redfighter0006.png'))          #12
@@ -149,21 +185,20 @@ class Nave(pygame.sprite.Sprite):
         self.atual = 0
         self.image = self.sprites[0]
         self.rect = self.image.get_rect(center=(400,300))
-    
     def update(self):
             self.atual = self.atual + 0.35
             if self.atual >= len(self.sprites):        
                     self.atual = 0
             self.image = self.sprites[int(self.atual)]
-            self.image = pygame.transform.scale(self.image,(tamanho_nave)) 
+            self.image = pygame.transform.scale(self.image,(100,100)) 
             self.rect = self.image.get_rect( center =(pos_player_x,pos_player_y))
             
+# Funcoes 
 
-         # Funcoes 
 
 def respawn():
-    y = random.randint(1,500)
-    x = 600
+    y = random.randint(0 ,200)
+    x = largura
     return [x,y]
 def respawn_missil():
     triggered = False
@@ -174,39 +209,47 @@ def respawn_missil():
     return[respawn_missil_x,respawn_missil_y, triggered, vel_y_missil]
 def colisions():
     global pontos
+   
     if missil_rect.colliderect(alien_rect):
-        pontos += 1
+        pontos += 100
         return True
     else:
         return False
+def reiniciar_jogo():
+    global pontos 
+    pontos = 0    
+    morreu = False
 
 
-group_inimigos = pygame.sprite.Group()
+
 group_nave = pygame.sprite.Group()
 group_nave.add(Nave())
-group_inimigos.add(Inimigos())
+
+
+time =pygame.time.Clock()
+pause_time = pygame.time.delay(1)
 
 
 
-
-
-clock = pygame.time.Clock()
 
 while rodando:
-    clock = 100
+    fps = time.tick(60)
+    print(time)    
 
+    
 
-    #posicao do Rect
-    missil1_rect.x = pos_x_missil
-    missil1_rect.y = pos_y_missil
+#posicao do Rect
+    missil1_rect.x =  missil1_rect.x + 1
+    missil1_rect.y = missil1_rect.y +1 
     missil_rect.y = pos_y_missil
     missil_rect.x = pos_x_missil
     alien_rect.y = pos_allien_y
     alien_rect.x = pos_allien_x
+    
 
-    # Movimento
+# Movimento
     x -= 0.1
-    pos_allien_x -= 0.5
+    pos_allien_x -= 2 
     
     pos_y_missil -= vel_y_missil
 
@@ -226,10 +269,13 @@ while rodando:
     if userInput[pygame.K_d] and pos_player_x < largura - 45 :
             pos_player_x = pos_player_x + veL_nave
             pos_player_y = pos_player_y - 0
+            
             if not triggered:
                 pos_x_missil = pos_x_missil + veL_nave
                 pos_y_missil = pos_y_missil - 0
-    if userInput[pygame.K_w]and pos_player_y > 44: 
+    if userInput[pygame.K_w]and pos_player_y > 44 : 
+
+            
             pos_player_x = pos_player_x + 0
             pos_player_y = pos_player_y - veL_nave
             if not triggered:
@@ -241,32 +287,77 @@ while rodando:
             if not triggered:
                 pos_x_missil = pos_x_missil - 0
                 pos_y_missil = pos_y_missil + veL_nave
+
     if userInput[pygame.K_SPACE]  :
             triggered = True
             vel_y_missil = velocidade_do_missil
-            
-            # Respawn
 
-    if pos_allien_y == 50:
-        pos_allien_x = respawn()[0]
-        pos_allien_y = respawn()[1]
+    if userInput[pygame.K_f]  :
+            
+            tamanho_nave= 500 , 500        
+
+    
+# Respawn
 
     if pos_y_missil < 0:
         pos_x_missil, pos_y_missil, triggered, vel_y_missil = respawn_missil()
 
-    if pos_allien_y == 50 or colisions():
+    if pos_allien_y == 10 or colisions():
+        pontos -= 30
         pos_allien_x = respawn()[0]
         pos_allien_y = respawn()[1]
-   
-    print(pontos)
-   
-    screen.blit(img,(0, 0))
 
-   
-    #group_tela.draw(tela)
-    group_inimigos.draw(screen)
-    
-    pygame.draw.rect(screen,(255,0,0),missil1_rect,-1)
+#  Niveis de tela 
+            
+    if pontos > 0 : 
+            
+            pygame.draw.rect(img,(255,0,0),img_rect,-1)
+            screen.blit(img,(0,img_rect.y))
+            pygame.draw.rect(screen,(255,0,0),alien_rect,-1)
+            screen.blit(alien,(pos_allien_x,pos_allien_y))
+            #print("em funcionamento1")   
+            if pontos == 501 :
+                alien.kill
+
+                
+    if  pontos > 500 :
+            pygame.draw.rect(img3,(255,0,0),img3_rect,-1)
+            screen.blit(img3,(0,0))
+            pygame.draw.rect(screen,(255,0,0),alien1_rect,-1)
+            screen.blit(alien1,(pos_allien_x,pos_allien_y))
+            #print("em funcionamento2") 
+            if pontos == 101 :
+                pygame.time.get_ticks()
+    if pontos > 1000 : 
+            pygame.draw.rect(img4,(255,0,0),img_rect,-1)
+            screen.blit(img5,(0,img_rect.y))
+            pygame.draw.rect(screen,(255,0,0),alien2_rect,-1)
+            screen.blit(alien2,(pos_allien_x,pos_allien_y))
+            #print("em funcionamento3")   
+            if pontos == 151 :
+                pygame.time.get_ticks()
+    if pontos > 1500 : 
+            pygame.draw.rect(img5,(255,0,0),img_rect,-1)
+            screen.blit(img5,(0,img_rect.y))
+            pygame.draw.rect(screen,(255,0,0),alien3_rect,-1)
+            screen.blit(alien3,(pos_allien_x,pos_allien_y))
+            #print("em funcionamento4")   
+            if pontos == 201 :
+               pygame.time.get_ticks()
+    if pontos  > 20000000 :
+            pygame.draw.rect(img2,(255,0,0),img_rect,-1)
+            screen.blit(img2,(0,img_rect.y)) 
+            pygame.draw.rect(screen,(255,0,0),alien4_rect,-1)
+            screen.blit(alien4,(pos_allien_x,pos_allien_y))
+            #print("em funcionamento5")   
+            
+
+# Tela inicial
+    pygame.draw.rect(screen,(255,0,0),tela_inicial_rect,1)
+    screen.blit(tela_inicial,(0 ,0))
+            
+#Poderes
+    pygame.draw.rect(screen,(255,0,0),missil1_rect,1)
     screen.blit(missil1,(pos_x_missil-65 ,pos_y_missil-10))
 
     pygame.draw.rect(screen,(255,0,0),missil1_rect,-1)
@@ -277,18 +368,12 @@ while rodando:
 
     pygame.draw.rect(screen,(255,0,0),missil_rect,-1)
     screen.blit(missil1,(pos_x_missil-30 ,pos_y_missil-10))
-
-    pygame.draw.rect(screen,(255,0,0),alien_rect,-1)
-    screen.blit(alien,(pos_allien_x,pos_allien_y))
-
-    score = font.render(f'Pontos: {int(pontos)} ',True,(0,0,0))
+#Aliens
+    score = font.render(f'Pontos: {int(pontos)} ',True,(255,80,0))
     screen.blit(score,(5,5))
-
-    group_nave.update()
+  
     group_nave.draw(screen)
-    #group_tela.update()
-    #group_laser.update()
-    group_inimigos.update()
+    group_nave.update()
    
     pygame.display.flip()
 
