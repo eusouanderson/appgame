@@ -42,7 +42,8 @@ pos_allien_y = 360
 pos_player_x = largura/2
 pos_player_y = altura/2
 
-pontos = 10
+pontos = 1
+level = 1
 
 #imagens 
 
@@ -60,8 +61,8 @@ screen = pygame.display.set_mode((tamanho))
 pygame.display.set_caption ('War Naves')
 
 
-img= pygame.image.load('img/back1.png')
-img= pygame.transform.scale(img,(largura,altura))
+img= pygame.image.load('img/inicial (2).png')
+#img= pygame.transform.scale(img,(largura,altura))
 
 img2= pygame.image.load('img/back2.png')
 img2= pygame.transform.scale(img2,(largura,altura))
@@ -135,7 +136,8 @@ img2_rect = img2.get_rect()
 img3_rect = img3.get_rect()
 img4_rect = img4.get_rect()
 screen_rect = screen.get_rect()
-img_rect.y -= 1 
+
+
 tela_inicial_rect = tela_inicial.get_rect()
 
 
@@ -186,18 +188,19 @@ class Nave(pygame.sprite.Sprite):
         self.image = self.sprites[0]
         self.rect = self.image.get_rect(center=(400,300))
     def update(self):
-            self.atual = self.atual + 0.35
-            if self.atual >= len(self.sprites):        
+        self.atual = self.atual + 0.35
+        if self.atual >= len(self.sprites):        
                     self.atual = 0
-            self.image = self.sprites[int(self.atual)]
-            self.image = pygame.transform.scale(self.image,(100,100)) 
-            self.rect = self.image.get_rect( center =(pos_player_x,pos_player_y))
+        self.image = self.sprites[int(self.atual)]
+        self.image = pygame.transform.scale(self.image,(100,100)) 
+        self.image = pygame.transform.rotate(self.image, -90)
+        self.rect = self.image.get_rect( center =(pos_player_x,pos_player_y))
             
 # Funcoes 
 
 
 def respawn():
-    y = random.randint(0 ,200)
+    y = random.randint(0 ,altura)
     x = largura
     return [x,y]
 def respawn_missil():
@@ -208,16 +211,20 @@ def respawn_missil():
     vel_y_missil = 0
     return[respawn_missil_x,respawn_missil_y, triggered, vel_y_missil]
 def colisions():
-    global pontos
+    global pontos , level
    
     if missil_rect.colliderect(alien_rect):
         pontos += 100
+        
+        
         return True
     else:
         return False
+        
 def reiniciar_jogo():
-    global pontos 
+    global pontos , level ,morreu
     pontos = 0    
+    level = 0
     morreu = False
 
 
@@ -233,8 +240,11 @@ pause_time = pygame.time.delay(1)
 
 
 while rodando:
-    fps = time.tick(60)
+    fps = time.tick(160)
     print(time)    
+
+  
+       
 
     
 
@@ -251,7 +261,8 @@ while rodando:
     x -= 0.1
     pos_allien_x -= 2 
     
-    pos_y_missil -= vel_y_missil
+    #pos_y_missil -= vel_y_missil
+    pos_x_missil += vel_y_missil
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -262,20 +273,17 @@ while rodando:
     
     if userInput[pygame.K_a] and pos_player_x > 44 : 
             pos_player_x = pos_player_x - veL_nave
-            pos_player_y = pos_player_y + 0
+            pos_player_y = pos_player_y - 0
             if not triggered:
                 pos_x_missil = pos_x_missil - veL_nave
                 pos_y_missil = pos_y_missil + 0
     if userInput[pygame.K_d] and pos_player_x < largura - 45 :
             pos_player_x = pos_player_x + veL_nave
             pos_player_y = pos_player_y - 0
-            
             if not triggered:
                 pos_x_missil = pos_x_missil + veL_nave
                 pos_y_missil = pos_y_missil - 0
     if userInput[pygame.K_w]and pos_player_y > 44 : 
-
-            
             pos_player_x = pos_player_x + 0
             pos_player_y = pos_player_y - veL_nave
             if not triggered:
@@ -299,52 +307,68 @@ while rodando:
     
 # Respawn
 
-    if pos_y_missil < 0:
+    if pos_y_missil <=0 :
+        pos_x_missil, pos_y_missil, triggered, vel_y_missil = respawn_missil()
+    if pos_x_missil >= 600 :
         pos_x_missil, pos_y_missil, triggered, vel_y_missil = respawn_missil()
 
-    if pos_allien_y == 10 or colisions():
+    if pos_allien_x == 10 or colisions():
         pontos -= 30
+        
         pos_allien_x = respawn()[0]
         pos_allien_y = respawn()[1]
+        pygame.draw.rect(screen,(255,0,0),tela_inicial_rect,1)
+        screen.blit(tela_inicial,(0 ,0))
+    
+    if pontos == pontos +100:
+        level += 1
+
+
 
 #  Niveis de tela 
             
     if pontos > 0 : 
             
+
             pygame.draw.rect(img,(255,0,0),img_rect,-1)
             screen.blit(img,(0,img_rect.y))
+  
+            rel_x = x % img.get_rect().width
+            screen.blit(img,(rel_x - img.get_rect().width,0))
+            if rel_x < altura:
+             screen.blit(img,(rel_x,0))
+
             pygame.draw.rect(screen,(255,0,0),alien_rect,-1)
             screen.blit(alien,(pos_allien_x,pos_allien_y))
-            #print("em funcionamento1")   
-            if pontos == 501 :
-                alien.kill
 
-                
-    if  pontos > 500 :
+            x-= 10 
+            if pontos == 500000000 :
+                screen.blit = False
+
+    if  pontos > 500000000 :
             pygame.draw.rect(img3,(255,0,0),img3_rect,-1)
             screen.blit(img3,(0,0))
             pygame.draw.rect(screen,(255,0,0),alien1_rect,-1)
             screen.blit(alien1,(pos_allien_x,pos_allien_y))
             #print("em funcionamento2") 
-            if pontos == 101 :
-                pygame.time.get_ticks()
-    if pontos > 1000 : 
+            if pontos ==  1000000000 :
+                screen.blit = False
+    if pontos > 1000000000 : 
             pygame.draw.rect(img4,(255,0,0),img_rect,-1)
             screen.blit(img5,(0,img_rect.y))
             pygame.draw.rect(screen,(255,0,0),alien2_rect,-1)
             screen.blit(alien2,(pos_allien_x,pos_allien_y))
             #print("em funcionamento3")   
-            if pontos == 151 :
-                pygame.time.get_ticks()
-    if pontos > 1500 : 
+            if pontos == 20000000000 :
+                screen.blit = False
+    if pontos > 20000000000 : 
             pygame.draw.rect(img5,(255,0,0),img_rect,-1)
             screen.blit(img5,(0,img_rect.y))
             pygame.draw.rect(screen,(255,0,0),alien3_rect,-1)
             screen.blit(alien3,(pos_allien_x,pos_allien_y))
-            #print("em funcionamento4")   
-            if pontos == 201 :
-               pygame.time.get_ticks()
-    if pontos  > 20000000 :
+            if pontos == 200000000000 :
+               screen.blit = False
+    if pontos  > 200000000000 :
             pygame.draw.rect(img2,(255,0,0),img_rect,-1)
             screen.blit(img2,(0,img_rect.y)) 
             pygame.draw.rect(screen,(255,0,0),alien4_rect,-1)
@@ -353,24 +377,24 @@ while rodando:
             
 
 # Tela inicial
-    pygame.draw.rect(screen,(255,0,0),tela_inicial_rect,1)
-    screen.blit(tela_inicial,(0 ,0))
+    
             
 #Poderes
-    pygame.draw.rect(screen,(255,0,0),missil1_rect,1)
-    screen.blit(missil1,(pos_x_missil-65 ,pos_y_missil-10))
+    
 
     pygame.draw.rect(screen,(255,0,0),missil1_rect,-1)
-    screen.blit(missil1,(pos_x_missil-55 ,pos_y_missil-10))
+    screen.blit(missil1,(pos_x_missil-100 ,pos_y_missil-50))
 
     pygame.draw.rect(screen,(255,0,0),missil1_rect,-1)
-    screen.blit(missil1,(pos_x_missil-45 ,pos_y_missil-10))
+    screen.blit(missil1,(pos_x_missil-100 ,pos_y_missil -50))
 
     pygame.draw.rect(screen,(255,0,0),missil_rect,-1)
-    screen.blit(missil1,(pos_x_missil-30 ,pos_y_missil-10))
-#Aliens
+    screen.blit(missil1,(pos_x_missil-100 ,pos_y_missil -50 ))
+    #Aliens
     score = font.render(f'Pontos: {int(pontos)} ',True,(255,80,0))
     screen.blit(score,(5,5))
+    score = font.render(f'Level: {int(level)} ',True,(255,80,0))
+    screen.blit(score,(400,5))
   
     group_nave.draw(screen)
     group_nave.update()
