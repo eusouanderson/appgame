@@ -1,5 +1,6 @@
 
 
+from tracemalloc import stop
 import pygame
 from pygame.locals import * 
 from pygame.locals import QUIT
@@ -17,6 +18,12 @@ missil_sound = pygame.mixer.Sound('sounds/laserfire02.ogg')
 missil_sound.set_volume(VolumeM_do_game)
 pygame.mixer.music.set_volume(0.1)
 pygame.mixer.music.play()
+
+pontos1= 1000
+pontos2= 2000
+pontos3= 3000
+pontos4= 4000
+
 
 #Configuracoes 
 # Tela
@@ -57,6 +64,8 @@ triggered = False
 
 tamanho_nave = 100, 100
 
+# Config IMAGENS E TELA
+
 screen = pygame.display.set_mode((tamanho))
 pygame.display.set_caption ('War Naves')
 
@@ -65,10 +74,10 @@ img= pygame.image.load('img/inicial (2).png')
 #img= pygame.transform.scale(img,(largura,altura))
 
 img2= pygame.image.load('img/back2.png')
-img2= pygame.transform.scale(img2,(largura,altura))
+#img2= pygame.transform.scale(img2,(largura,altura))
 
 img3= pygame.image.load('img/back3.png')
-img3= pygame.transform.scale(img3,(largura,altura))
+#img3= pygame.transform.scale(img3,(largura,altura))
 
 img4= pygame.image.load('img/back4.png')
 img4= pygame.transform.scale(img4,(largura,altura))
@@ -135,6 +144,7 @@ img_rect = img.get_rect()
 img2_rect = img2.get_rect()
 img3_rect = img3.get_rect()
 img4_rect = img4.get_rect()
+img5_rect = img5.get_rect()
 screen_rect = screen.get_rect()
 
 
@@ -328,50 +338,33 @@ while rodando:
     if pontos > 0 : 
             
 
-            pygame.draw.rect(img,(255,0,0),img_rect,-1)
+            pygame.draw.rect(img,(255,0,0),alien1_rect,-1)
             screen.blit(img,(0,img_rect.y))
+            if pontos >= pontos1 :
+                img = img2
+                level = +1
+            if  pontos > pontos2 :
+                level = +2
+                img2 = img3
+            if pontos >  pontos3 :
+                level = +3
+                img3 = img4
+            if pontos >  pontos4 :
+                level = +4
+                img4 = img5
   
             rel_x = x % img.get_rect().width
             screen.blit(img,(rel_x - img.get_rect().width,0))
             if rel_x < altura:
-             screen.blit(img,(rel_x,0))
-
+                screen.blit(img,(rel_x,0))
+            x-= 10 
             pygame.draw.rect(screen,(255,0,0),alien_rect,-1)
             screen.blit(alien,(pos_allien_x,pos_allien_y))
 
-            x-= 10 
-            if pontos == 500000000 :
-                screen.blit = False
 
-    if  pontos > 500000000 :
-            pygame.draw.rect(img3,(255,0,0),img3_rect,-1)
-            screen.blit(img3,(0,0))
-            pygame.draw.rect(screen,(255,0,0),alien1_rect,-1)
-            screen.blit(alien1,(pos_allien_x,pos_allien_y))
-            #print("em funcionamento2") 
-            if pontos ==  1000000000 :
-                screen.blit = False
-    if pontos > 1000000000 : 
-            pygame.draw.rect(img4,(255,0,0),img_rect,-1)
-            screen.blit(img5,(0,img_rect.y))
-            pygame.draw.rect(screen,(255,0,0),alien2_rect,-1)
-            screen.blit(alien2,(pos_allien_x,pos_allien_y))
-            #print("em funcionamento3")   
-            if pontos == 20000000000 :
-                screen.blit = False
-    if pontos > 20000000000 : 
-            pygame.draw.rect(img5,(255,0,0),img_rect,-1)
-            screen.blit(img5,(0,img_rect.y))
-            pygame.draw.rect(screen,(255,0,0),alien3_rect,-1)
-            screen.blit(alien3,(pos_allien_x,pos_allien_y))
-            if pontos == 200000000000 :
-               screen.blit = False
-    if pontos  > 200000000000 :
-            pygame.draw.rect(img2,(255,0,0),img_rect,-1)
-            screen.blit(img2,(0,img_rect.y)) 
-            pygame.draw.rect(screen,(255,0,0),alien4_rect,-1)
-            screen.blit(alien4,(pos_allien_x,pos_allien_y))
-            #print("em funcionamento5")   
+           
+
+
             
 
 # Tela inicial
