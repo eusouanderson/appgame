@@ -12,7 +12,7 @@ pygame.font.init()
 # Sound
 VolumeM_do_game = 1
 pygame.mixer.init()
-pygame.mixer.music.load('sounds/Flies By The Fire.wav')
+pygame.mixer.music.load('Flies By The Fire.wav')
 missil_sound = pygame.mixer.Sound('sounds/laserfire02.ogg')
 missil_sound.set_volume(VolumeM_do_game)
 pygame.mixer.music.set_volume(0.1)
