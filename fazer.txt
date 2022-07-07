@@ -1,7 +1,8 @@
 1 movimentar todas as telas 
-
+ok
 
 2 Arruma level 
+ok
 
 
 2 aliens atirar misseis 
