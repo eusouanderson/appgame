@@ -12,7 +12,7 @@ pygame.font.init()
 # Sound
 VolumeM_do_game = 1
 pygame.mixer.init()
-pygame.mixer.music.load('Flies By The Fire.wav')
+pygame.mixer.music.load('sounds/Flies By The Fire.wav')
 missil_sound = pygame.mixer.Sound('sounds/laserfire02.ogg')
 missil_sound.set_volume(VolumeM_do_game)
 pygame.mixer.music.set_volume(0.1)
@@ -42,8 +42,8 @@ pos_allien_y = 360
 pos_player_x = largura/2
 pos_player_y = altura/2
 
-pontos = 1
-level = 1
+pontos = 0
+level = 0
 
 #imagens 
 
@@ -320,8 +320,6 @@ while rodando:
         pygame.draw.rect(screen,(255,0,0),tela_inicial_rect,1)
         screen.blit(tela_inicial,(0 ,0))
     
-    if pontos == pontos +100:
-        level += 1
 
 
 
