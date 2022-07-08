@@ -1,5 +1,3 @@
-
-
 import pygame
 from pygame.locals import * 
 from pygame.locals import QUIT
